@@ -48,3 +48,5 @@ class PhysicalUnits(Enum):
     V = 0x23
 
     Hz = 0x2C
+    
+    NoUnit = 0xFF

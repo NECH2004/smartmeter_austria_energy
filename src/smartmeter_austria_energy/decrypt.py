@@ -39,12 +39,19 @@ class Decrypt:
             if decrypted[pos] != DataType.OctetString:
                 pos += 1
                 continue
-            if decrypted[pos + 1] != 6:
+            if decrypted[pos + 1] == 6:
+                obis_code = decrypted[pos + 2 : pos + 2 + 6]
+                data_type = decrypted[pos + 2 + 6]
+                pos += 2 + 6 + 1
+            elif decrypted[pos + 1] == 0xC and pos>220:
+                #EVN Device Name Emulation for OBIS 0-0:96.1.0.255 
+                obis_code = b'\x00\x00\x60\x01\x00\xff'
+                data_type = 9 # octet string
+                pos += 1
+            else:
                 pos += 1
                 continue
-            obis_code = decrypted[pos + 2 : pos + 2 + 6]
-            data_type = decrypted[pos + 2 + 6]
-            pos += 2 + 6 + 1
+
 
             if data_type == DataType.DoubleLongUnsigned:
                 value = int.from_bytes(decrypted[pos : pos + 4], "big")
