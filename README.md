@@ -29,15 +29,15 @@ Possible COM port settings:
 COM5, eg using Windows
 
 ```python
-from smartmeter_austria_energy.supplier import (SUPPLIER_SALZBURGNETZ_NAME)
+from smartmeter_austria_energy.supplier import (SupplierSALZBURGNETZ)
 from smartmeter_austria_energy.smartmeter import(Smartmeter)
 
 def main():
-    supplier_name = SUPPLIER_SALZBURGNETZ_NAME
+    supplier = SupplierSALZBURGNETZ
     key_hex_string = "-- this is your key --"
     port = "COM5"
 
-    smartmeter = Smartmeter(supplier_name, port, key_hex_string)
+    smartmeter = Smartmeter(supplier, port, key_hex_string)
     my_obisdata = smartmeter.read()
 
     print(f"RealEnergyIn: {my_obisdata.RealEnergyIn.ValueString}")
