@@ -14,7 +14,7 @@ from src.smartmeter_austria_energy.supplier import (
 _frame1_start_bytes_hex : str = '68fafa68'
 _frame1_start_bytes : bytes = b'\x68\xfa\xfa\x68'  # 68 FA FA 68
 _frame2_end_bytes : bytes = b'\x16'
-_supplied_values : list[str] = [
+_supplied_values_ti : list[str] = [
     "VoltageL1",
     "VoltageL2",
     "VoltageL3",
@@ -27,6 +27,21 @@ _supplied_values : list[str] = [
     "RealEnergyOut",
     "ReactiveEnergyIn",
     "ReactiveEnergyOut",
+    "Factor",
+    "DeviceNumber",
+    "LogicalDeviceNumber"]
+
+_supplied_values_evn : list[str] = [
+    "VoltageL1",
+    "VoltageL2",
+    "VoltageL3",
+    "CurrentL1",
+    "CurrentL2",
+    "CurrentL3",
+    "RealPowerIn",
+    "RealPowerOut",
+    "RealEnergyIn",
+    "RealEnergyOut",
     "Factor",
     "DeviceNumber",
     "LogicalDeviceNumber"]
@@ -108,7 +123,7 @@ def test_Supplier():
     assert my_supplier.frame1_start_bytes_hex == _frame1_start_bytes_hex
     assert my_supplier.frame1_start_bytes == _frame1_start_bytes
     assert my_supplier.frame2_end_bytes == _frame2_end_bytes
-    assert my_supplier.supplied_values == _supplied_values
+    assert my_supplier.supplied_values == None
 
 
 def test_SupplierEVN():
@@ -126,7 +141,7 @@ def test_SupplierEVN():
     assert my_supplier.frame1_start_bytes_hex == _frame1_start_bytes_hex
     assert my_supplier.frame1_start_bytes == _frame1_start_bytes
     assert my_supplier.frame2_end_bytes == _frame2_end_bytes
-    assert my_supplier.supplied_values == _supplied_values
+    assert my_supplier.supplied_values == _supplied_values_evn
 
     assert my_supplier.frame2_start_bytes_hex == '68141468'
     assert my_supplier.frame2_start_bytes == b'\x68\x14\x14\x68'
@@ -147,7 +162,7 @@ def test_SupplierTINETZ():
     assert my_supplier.frame1_start_bytes_hex == _frame1_start_bytes_hex
     assert my_supplier.frame1_start_bytes == _frame1_start_bytes
     assert my_supplier.frame2_end_bytes == _frame2_end_bytes
-    assert my_supplier.supplied_values == _supplied_values
+    assert my_supplier.supplied_values == _supplied_values_ti
 
     assert my_supplier.frame2_start_bytes_hex == '68727268'
     assert my_supplier.frame2_start_bytes == b'\x68\x72\x72\x68'
@@ -168,7 +183,7 @@ def test_SupplierSALZBURGNETZ():
     assert my_supplier.frame1_start_bytes_hex == _frame1_start_bytes_hex
     assert my_supplier.frame1_start_bytes == _frame1_start_bytes
     assert my_supplier.frame2_end_bytes == _frame2_end_bytes
-    assert my_supplier.supplied_values == _supplied_values
+    assert my_supplier.supplied_values == _supplied_values_ti
 
     assert my_supplier.frame2_start_bytes_hex == '68727268'
     assert my_supplier.frame2_start_bytes == b'\x68\x72\x72\x68'

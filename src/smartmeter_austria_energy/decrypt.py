@@ -46,7 +46,7 @@ class Decrypt:
             elif decrypted[pos + 1] == 0xC and pos>220:
                 #EVN Device Name Emulation for OBIS 0-0:96.1.0.255 
                 obis_code = b'\x00\x00\x60\x01\x00\xff'
-                data_type = 9 # octet string
+                data_type = DataType.OctetString
                 pos += 1
             else:
                 pos += 1

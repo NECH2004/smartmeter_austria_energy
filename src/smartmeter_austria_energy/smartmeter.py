@@ -14,7 +14,7 @@ from .exceptions import (
     SmartmeterTimeoutException,
 )
 from .obisdata import ObisData
-from .supplier import SUPPLIERS
+from .supplier import Supplier, SUPPLIERS
 
 
 class Smartmeter:
@@ -22,7 +22,7 @@ class Smartmeter:
 
     def __init__(
         self,
-        supplier_name: str,
+        supplier: Supplier,
         port: str,
         key_hex_string: str,
         interval: int = 1,
@@ -32,7 +32,7 @@ class Smartmeter:
         bytesize: str = serial.EIGHTBITS,
         serial_read_chunk_size: int = 100,
     ) -> None:
-        self._supplier_name = supplier_name
+        self._supplier = supplier
         self._port: str = port
         self._key_hex_string = key_hex_string
         self._baudrate: int = baudrate
@@ -53,7 +53,6 @@ class Smartmeter:
         try:
             self.__open_serial()
 
-            supplier = SUPPLIERS.get(self._supplier_name)
             is_running = self._mySerial.isOpen()
             self._is_running = is_running
 
@@ -81,14 +80,14 @@ class Smartmeter:
                     # timeout must be <5. Lower timeouts make us fail quicker.
                     byte_chunk = self._mySerial.read(self._mySerial.inWaiting())
                     stream += byte_chunk
-                    frame1_start_pos = stream.find(supplier.frame1_start_bytes)
-                    frame2_start_pos = stream.find(supplier.frame2_start_bytes)
+                    frame1_start_pos = stream.find(self._supplier.frame1_start_bytes)
+                    frame2_start_pos = stream.find(self._supplier.frame2_start_bytes)
 
                     # fail as early as possible if we find the segment is not complete yet.
                     if (
-                        (stream.find(supplier.frame1_start_bytes) < 0)
-                        or (stream.find(supplier.frame2_start_bytes) <= 0)
-                        or (stream[-1:] != supplier.frame2_end_bytes)
+                        (stream.find(self._supplier.frame1_start_bytes) < 0)
+                        or (stream.find(self._supplier.frame2_start_bytes) <= 0)
+                        or (stream[-1:] != self._supplier.frame2_end_bytes)
                         or (len(byte_chunk) == self._serial_read_chunk_size)
                     ):
 
@@ -107,7 +106,7 @@ class Smartmeter:
                             continue
 
                         # we have found at least two complete telegrams
-                        regex = binascii.unhexlify("28" + supplier.frame1_start_bytes_hex + "7c" + supplier.frame2_start_bytes_hex + "29")  # re = '(..|..)'
+                        regex = binascii.unhexlify("28" + self._supplier.frame1_start_bytes_hex + "7c" + self._supplier.frame2_start_bytes_hex + "29")  # re = '(..|..)'
                         my_list = re.split(regex, stream)
                         my_list = list(filter(None, my_list))  # remove empty elements
                         # l after split (here in following example in hex)
@@ -115,7 +114,7 @@ class Smartmeter:
 
                         # take the first two matching telegrams
                         for i, el in enumerate(my_list):
-                            if el == supplier.frame1_start_bytes:
+                            if el == self._supplier.frame1_start_bytes:
                                 frame1 = my_list[i] + my_list[i + 1]
                                 frame2 = my_list[i + 2] + my_list[i + 3]
                                 break
@@ -138,10 +137,10 @@ class Smartmeter:
                     raise SmartmeterTimeoutException()
 
             self._logger.debug("Next step is decrypting.")
-            dec = Decrypt(supplier, frame1, frame2, self._key_hex_string)
+            dec = Decrypt(self._supplier, frame1, frame2, self._key_hex_string)
             dec.parse_all()
 
-            obisData = ObisData(dec, supplier.supplied_values)
+            obisData = ObisData(dec, self._supplier.supplied_values)
             return obisData
         except Exception as exception:
             raise SmartmeterException() from exception
