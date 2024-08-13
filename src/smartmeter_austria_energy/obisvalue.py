@@ -53,14 +53,14 @@ class ObisValueFloat:
         return f"{self.value} {self.unit.name}"
 
 
-class ObisValueString:
-    """Defines value objects for strings."""
+class ObisValueBytes:
+    """Defines value objects for byte arrays."""
 
-    def __init__(self, raw_value: str) -> None:
+    def __init__(self, raw_value: bytes) -> None:
         self._raw_value = raw_value
 
     @property
-    def raw_value(self) -> str:
+    def raw_value(self) -> bytes:
         """The unformatted OBIS value."""
         return self._raw_value
 

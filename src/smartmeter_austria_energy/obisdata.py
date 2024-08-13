@@ -2,7 +2,7 @@
 
 from .constants import PhysicalUnits
 from .decrypt import Decrypt
-from .obisvalue import ObisValueFloat, ObisValueString
+from .obisvalue import ObisValueFloat, ObisValueBytes
 
 
 class ObisData():
@@ -25,8 +25,8 @@ class ObisData():
         self._real_energy_out = ObisValueFloat(0, PhysicalUnits.Wh)
         self._reactive_energy_in = ObisValueFloat(0, PhysicalUnits.varh)
         self._reactive_energy_out = ObisValueFloat(0, PhysicalUnits.varh)
-        self._device_number = ObisValueString("")
-        self._logical_device_number = ObisValueString("")
+        self._device_number = ObisValueBytes("")
+        self._logical_device_number = ObisValueBytes("")
 
         for key in wanted_values:
             my_value = dec.get_obis_value(key)
@@ -154,7 +154,7 @@ class ObisData():
 
     # Device
     @property
-    def DeviceNumber(self) -> ObisValueString:
+    def DeviceNumber(self) -> ObisValueBytes:
         """The device number."""
         return self._device_number
 
@@ -163,7 +163,7 @@ class ObisData():
         self._device_number = deviceNumber
 
     @property
-    def LogicalDeviceNumber(self) -> ObisValueString:
+    def LogicalDeviceNumber(self) -> ObisValueBytes:
         """The logical device number."""
         return self._logical_device_number
 

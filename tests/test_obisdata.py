@@ -7,7 +7,7 @@
 from src.smartmeter_austria_energy.constants import PhysicalUnits
 from src.smartmeter_austria_energy.decrypt import Decrypt
 from src.smartmeter_austria_energy.obisdata import ObisData
-from src.smartmeter_austria_energy.obisvalue import ObisValueFloat, ObisValueString
+from src.smartmeter_austria_energy.obisvalue import ObisValueFloat, ObisValueBytes
 from src.smartmeter_austria_energy.supplier import SupplierTINETZ
 
 
@@ -104,10 +104,10 @@ def test_ObisData_properties():
     assert reactiveEnergyOut.raw_value == 0
     assert reactiveEnergyOut.unit == PhysicalUnits.varh
 
-    assert isinstance(deviceNumber, ObisValueString)
+    assert isinstance(deviceNumber, ObisValueBytes)
     assert deviceNumber.raw_value == ""
 
-    assert isinstance(logicalDeviceNumber, ObisValueString)
+    assert isinstance(logicalDeviceNumber, ObisValueBytes)
     assert logicalDeviceNumber.raw_value == ""
 
 
@@ -214,10 +214,10 @@ def test_ObisData_property_setter():
     assert reactiveEnergyOut.raw_value == 0
     assert reactiveEnergyOut.unit == PhysicalUnits.varh
 
-    assert isinstance(deviceNumber, ObisValueString)
+    assert isinstance(deviceNumber, ObisValueBytes)
     assert deviceNumber.raw_value == ""
 
-    assert isinstance(logicalDeviceNumber, ObisValueString)
+    assert isinstance(logicalDeviceNumber, ObisValueBytes)
     assert logicalDeviceNumber.raw_value == ""
 
 

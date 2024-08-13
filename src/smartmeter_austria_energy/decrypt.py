@@ -6,7 +6,7 @@ from Crypto.Cipher import AES
 
 from .constants import DataType, PhysicalUnits
 from .obis import Obis
-from .obisvalue import ObisValueFloat, ObisValueString
+from .obisvalue import ObisValueFloat, ObisValueBytes
 from .supplier import Supplier
 
 
@@ -94,9 +94,9 @@ class Decrypt:
                 pos += 1 + octet_len + 2
                 self.obis[obis_code] = octet
 
-                self.obis_values[obis_code] = ObisValueString(octet)
+                self.obis_values[obis_code] = ObisValueBytes(octet)
 
-    def get_obis_value(self, name) -> ObisValueFloat | ObisValueString:
+    def get_obis_value(self, name) -> ObisValueFloat | ObisValueBytes:
         """Fetch the value of the data structure using its key."""
 
         d = getattr(Obis, name)
