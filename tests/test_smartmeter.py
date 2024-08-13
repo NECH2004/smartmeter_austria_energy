@@ -26,3 +26,14 @@ def test_smartmeter_has_empty_port():
     my_smartmeter = Smartmeter(supplier, port, key_hex_string)
     with pytest.raises(SmartmeterException):
         my_smartmeter.read()
+
+
+def test_smartmeter_supplier():
+    """Test the supplier property of the smartmeter class."""
+    supplier = SupplierEVN
+    key_hex_string = "some_hex"
+    port = "COM5"
+
+    my_smartmeter = Smartmeter(supplier, port, key_hex_string)
+
+    assert supplier == my_smartmeter.supplier

@@ -188,3 +188,8 @@ class Smartmeter:
             self._my_serial.close()
         except Exception as ex:
             raise SmartmeterException(f"Closing port '{self._port}' failed.") from ex
+
+    @property
+    def supplier(self) -> Supplier:
+        """Gets the supplier."""
+        return self._supplier
