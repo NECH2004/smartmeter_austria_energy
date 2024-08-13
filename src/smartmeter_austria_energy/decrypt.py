@@ -14,7 +14,7 @@ from .supplier import Supplier
 class Decrypt:
     """Decrypts the response frames."""
 
-    def __init__(self, supplier: Supplier, frame1, frame2, key_hex_string):
+    def __init__(self, supplier: Supplier, frame1: bytes, frame2: bytes, key_hex_string: str):
         self.obis = {}
         self.obis_values = {}
 
@@ -36,7 +36,6 @@ class Decrypt:
         data_encrypted = data_frame1 + data_frame2
         cipher = AES.new(key, AES.MODE_GCM, nonce=iv)
         self._data_decrypted = cipher.decrypt(data_encrypted)
-        self._data_decrypted_hex = binascii.hexlify(self._data_decrypted)
 
     def parse_all(self):
         """Parse both frames."""
