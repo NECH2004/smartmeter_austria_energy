@@ -1,11 +1,14 @@
 """Define constants for Smartmeter Austria Energy integration."""
 
+from dataclasses import dataclass
 from enum import Enum
 
 
-# https://www.dlms.com/files/Blue-Book-Ed-122-Excerpt.pdf
-# define the data types
+@dataclass
 class DataType:
+    """Defines the DLMS data types."""
+    # see: https://www.dlms.com/files/Blue-Book-Ed-122-Excerpt.pdf
+
     NullData = 0x00
     Boolean = 0x03
     BitString = 0x04
@@ -32,9 +35,12 @@ class DataType:
     CompactArray = 0x13
 
 
-# https://www.dlms.com/files/Blue-Book-Ed-122-Excerpt.pdf
-# defines the physical units of the data
 class PhysicalUnits(Enum):
+    """Defines the DLMS physical units."""
+    # https://www.dlms.com/files/Blue-Book-Ed-122-Excerpt.pdf
+
+    # pylint: disable=invalid-name
+
     Undef = 0x00
 
     W = 0x1B  # 27
@@ -48,5 +54,5 @@ class PhysicalUnits(Enum):
     V = 0x23
 
     Hz = 0x2C
-    
+
     NoUnit = 0xFF

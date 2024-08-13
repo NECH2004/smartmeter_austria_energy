@@ -1,1 +1,1 @@
-"""The Smartmeter Austria Energy integration."""
+"""Smartmeter Austria Energy."""

@@ -1,5 +1,7 @@
 """Tests the exception classes."""
 
+# pylint: disable=invalid-name
+
 from src.smartmeter_austria_energy.exceptions import (
     SmartmeterException,
     SmartmeterSerialException,
@@ -7,35 +9,23 @@ from src.smartmeter_austria_energy.exceptions import (
 )
 
 
-def test_SmartmeterException_Is_Exception():
+def test_SmartmeterException_is_exception():
     """Test the SmartmeterException class."""
-    # arrange
-
-    # act
     my_exception = SmartmeterException()
 
-    # assert
     assert isinstance(my_exception, Exception)
 
 
-def test_SmartmeterTimeoutException_Is_Exception():
+def test_SmartmeterTimeoutException_is_exception():
     """Test the SmartmeterTimeoutException class."""
-    # arrange
-
-    # act
     my_exception = SmartmeterTimeoutException()
 
-    # assert
     assert isinstance(my_exception, SmartmeterException)
 
 
-def test_SmartmeterSerialException_Is_Exception():
+def test_SmartmeterSerialException_is_exception():
     """Test the SmartmeterSerialException class."""
-    # arrange
-
-    # act
     my_exception = SmartmeterSerialException()
 
-    # assert
     assert isinstance(my_exception, SmartmeterException)
     assert isinstance(my_exception, Exception)

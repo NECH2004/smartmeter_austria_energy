@@ -1,10 +1,18 @@
 """Defines the OBIS objects."""
 
+from dataclasses import dataclass
 
+@dataclass
 class Obis:
+    """Defines the OBIS object."""
+
+    @staticmethod
     def to_bytes(code):
+        """Returns the code as byte array."""
+
         return bytes([int(a) for a in code.split(".")])
 
+    # names of variables are fixed. Do not change.
     VoltageL1 = to_bytes("01.0.32.7.0.255")
     VoltageL2 = to_bytes("01.0.52.7.0.255")
     VoltageL3 = to_bytes("01.0.72.7.0.255")
