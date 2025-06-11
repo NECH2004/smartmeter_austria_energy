@@ -5,8 +5,9 @@ import logging
 import re
 import time
 
+from serial.serialutil import SerialException, SerialTimeoutException, PARITY_NONE, STOPBITS_ONE, EIGHTBITS
 import serial
-from serial.serialutil import SerialException, SerialTimeoutException
+
 
 from .decrypt import Decrypt
 from .exceptions import (
@@ -32,9 +33,9 @@ class Smartmeter:
         key_hex_string: str,
         interval: int = 1,
         baudrate: int = 2400,
-        parity: str = serial.PARITY_NONE,
-        stopbits: str = serial.STOPBITS_ONE,
-        bytesize: str = serial.EIGHTBITS,
+        parity: str = PARITY_NONE,
+        stopbits: int = STOPBITS_ONE,
+        bytesize: int = EIGHTBITS,
         serial_read_chunk_size: int = 100,
     ) -> None:
         self._supplier = supplier
@@ -42,11 +43,11 @@ class Smartmeter:
         self._key_hex_string = key_hex_string
         self._baudrate: int = baudrate
         self._parity: str = parity
-        self._stopbits: str = stopbits
-        self._bytesize: str = bytesize
+        self._stopbits: int = stopbits
+        self._bytesize: int = bytesize
         self._interval: int = interval
         self._serial_read_chunk_size: int = serial_read_chunk_size
-        self._my_serial: serial.Serial = None
+        self._my_serial: serial.Serial
         self._logger = logging.getLogger(__name__)
         self._is_running: bool = False
 
@@ -56,7 +57,7 @@ class Smartmeter:
     # pylint: disable=too-many-statements
     # pylint: disable=too-many-nested-blocks
 
-    def read(self) -> ObisData:
+    def read(self) -> ObisData | None:
         """Read the data."""
         if self._is_running:
             return None
@@ -64,7 +65,7 @@ class Smartmeter:
         try:
             self.__open_serial()
 
-            is_running = self._my_serial.isOpen()
+            is_running: bool = self._my_serial.isOpen() # type: ignore
             self._is_running = is_running
 
             self._logger.debug("Start reading from serial.")
@@ -85,11 +86,11 @@ class Smartmeter:
             # frame1 = first telegram (68fafa68), frame2 = second telegram (68727268)
             while is_running:
                 self._logger.debug("Read in chunks.")
-                if self._my_serial.inWaiting() > 0:
+                if self._my_serial.inWaiting() > 0: # type: ignore
                     # Read in chunks. Each chunk will wait as long as specified by
                     # serial timeout. As the meters we tested send data every 5s the
                     # timeout must be <5. Lower timeouts make us fail quicker.
-                    byte_chunk = self._my_serial.read(self._my_serial.inWaiting())
+                    byte_chunk = self._my_serial.read(self._my_serial.inWaiting()) # type: ignore
                     stream += byte_chunk
                     frame1_start_pos = stream.find(self._supplier.frame1_start_bytes)
                     frame2_start_pos = stream.find(self._supplier.frame2_start_bytes)
@@ -120,7 +121,7 @@ class Smartmeter:
                             + self._supplier.frame1_start_bytes_hex
                             + "7c"
                             + self._supplier.frame2_start_bytes_hex
-                            + "29"
+                            + "29" # type: ignore
                         )  # re = '(..|..)'
                         my_list = re.split(regex, stream)
                         my_list = list(filter(None, my_list))  # remove empty elements
@@ -185,7 +186,7 @@ class Smartmeter:
 
     def __close_serial(self):
         try:
-            self._my_serial.close()
+            self._my_serial.close() # type: ignore
         except Exception as ex:
             raise SmartmeterException(f"Closing port '{self._port}' failed.") from ex
 

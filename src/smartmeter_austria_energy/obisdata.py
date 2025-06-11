@@ -13,20 +13,20 @@ class ObisData():
     # names of variables are fixed. Do not change.
 
     def __init__(self, dec: Decrypt, wanted_values: list[str]) -> None:
-        self._voltage_l1 = ObisValueFloat(0, PhysicalUnits.V)
-        self._voltage_l2 = ObisValueFloat(0, PhysicalUnits.V)
-        self._voltage_l3 = ObisValueFloat(0, PhysicalUnits.V)
-        self._current_l1 = ObisValueFloat(0, PhysicalUnits.A)
-        self._current_l2 = ObisValueFloat(0, PhysicalUnits.A)
-        self._current_l3 = ObisValueFloat(0, PhysicalUnits.A)
-        self._real_power_in = ObisValueFloat(0, PhysicalUnits.W)
-        self._real_power_out = ObisValueFloat(0, PhysicalUnits.W)
-        self._real_energy_in = ObisValueFloat(0, PhysicalUnits.Wh)
-        self._real_energy_out = ObisValueFloat(0, PhysicalUnits.Wh)
-        self._reactive_energy_in = ObisValueFloat(0, PhysicalUnits.varh)
-        self._reactive_energy_out = ObisValueFloat(0, PhysicalUnits.varh)
-        self._device_number = ObisValueBytes("")
-        self._logical_device_number = ObisValueBytes("")
+        self._voltage_l1: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.V)
+        self._voltage_l2: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.V)
+        self._voltage_l3: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.V)
+        self._current_l1: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.A)
+        self._current_l2: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.A)
+        self._current_l3: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.A)
+        self._real_power_in: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.W)
+        self._real_power_out: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.W)
+        self._real_energy_in: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.Wh)
+        self._real_energy_out: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.Wh)
+        self._reactive_energy_in: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.varh)
+        self._reactive_energy_out: ObisValueFloat = ObisValueFloat(0, PhysicalUnits.varh)
+        self._device_number: ObisValueBytes = ObisValueBytes(b"")
+        self._logical_device_number: ObisValueBytes = ObisValueBytes(b"")
 
         for key in wanted_values:
             my_value = dec.get_obis_value(key)
@@ -41,7 +41,7 @@ class ObisData():
         return self._voltage_l1
 
     @VoltageL1.setter
-    def VoltageL1(self, voltageL1):
+    def VoltageL1(self, voltageL1: ObisValueFloat):
         self._voltage_l1 = voltageL1
 
     @property
@@ -50,7 +50,7 @@ class ObisData():
         return self._voltage_l2
 
     @VoltageL2.setter
-    def VoltageL2(self, voltageL2):
+    def VoltageL2(self, voltageL2: ObisValueFloat):
         self._voltage_l2 = voltageL2
 
     @property
@@ -59,7 +59,7 @@ class ObisData():
         return self._voltage_l3
 
     @VoltageL3.setter
-    def VoltageL3(self, voltageL3):
+    def VoltageL3(self, voltageL3: ObisValueFloat):
         self._voltage_l3 = voltageL3
 
     # Current
@@ -69,7 +69,7 @@ class ObisData():
         return self._current_l1
 
     @CurrentL1.setter
-    def CurrentL1(self, currentL1):
+    def CurrentL1(self, currentL1: ObisValueFloat):
         self._current_l1 = currentL1
 
     @property
@@ -78,7 +78,7 @@ class ObisData():
         return self._current_l2
 
     @CurrentL2.setter
-    def CurrentL2(self, currentL2):
+    def CurrentL2(self, currentL2: ObisValueFloat):
         self._current_l2 = currentL2
 
     @property
@@ -87,7 +87,7 @@ class ObisData():
         return self._current_l3
 
     @CurrentL3.setter
-    def CurrentL3(self, currentL3):
+    def CurrentL3(self, currentL3: ObisValueFloat):
         self._current_l3 = currentL3
 
     # Power
@@ -97,7 +97,7 @@ class ObisData():
         return self._real_power_in
 
     @RealPowerIn.setter
-    def RealPowerIn(self, realPowerIn):
+    def RealPowerIn(self, realPowerIn: ObisValueFloat):
         self._real_power_in = realPowerIn
 
     @property
@@ -106,7 +106,7 @@ class ObisData():
         return self._real_power_out
 
     @RealPowerOut.setter
-    def RealPowerOut(self, realPowerOut):
+    def RealPowerOut(self, realPowerOut: ObisValueFloat):
         self._real_power_out = realPowerOut
 
     # Calculated power property
@@ -122,7 +122,7 @@ class ObisData():
         return self._real_energy_in
 
     @RealEnergyIn.setter
-    def RealEnergyIn(self, realEnergyIn):
+    def RealEnergyIn(self, realEnergyIn: ObisValueFloat):
         self._real_energy_in = realEnergyIn
 
     @property
@@ -131,7 +131,7 @@ class ObisData():
         return self._real_energy_out
 
     @RealEnergyOut.setter
-    def RealEnergyOut(self, realEnergyOut):
+    def RealEnergyOut(self, realEnergyOut: ObisValueFloat):
         self._real_energy_out = realEnergyOut
 
     @property
@@ -140,7 +140,7 @@ class ObisData():
         return self._reactive_energy_in
 
     @ReactiveEnergyIn.setter
-    def ReactiveEnergyIn(self, reactiveEnergyIn):
+    def ReactiveEnergyIn(self, reactiveEnergyIn: ObisValueFloat):
         self._reactive_energy_in = reactiveEnergyIn
 
     @property
@@ -149,7 +149,7 @@ class ObisData():
         return self._reactive_energy_out
 
     @ReactiveEnergyOut.setter
-    def ReactiveEnergyOut(self, reactiveEnergyOut):
+    def ReactiveEnergyOut(self, reactiveEnergyOut: ObisValueFloat):
         self._reactive_energy_out = reactiveEnergyOut
 
     # Device
@@ -159,7 +159,7 @@ class ObisData():
         return self._device_number
 
     @DeviceNumber.setter
-    def DeviceNumber(self, deviceNumber):
+    def DeviceNumber(self, deviceNumber: ObisValueBytes):
         self._device_number = deviceNumber
 
     @property
@@ -168,5 +168,5 @@ class ObisData():
         return self._logical_device_number
 
     @LogicalDeviceNumber.setter
-    def LogicalDeviceNumber(self, logicalDeviceNumber):
+    def LogicalDeviceNumber(self, logicalDeviceNumber: ObisValueBytes):
         self._logical_device_number = logicalDeviceNumber

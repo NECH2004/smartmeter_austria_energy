@@ -1,11 +1,10 @@
 """Define constants for Smartmeter Austria Energy integration."""
 
-from dataclasses import dataclass
-from enum import Enum
+from enum import IntEnum, unique
 
 
-@dataclass
-class DataType:
+@unique
+class DataType(IntEnum):
     """Defines the DLMS data types."""
     # see: https://www.dlms.com/files/Blue-Book-Ed-122-Excerpt.pdf
 
@@ -35,7 +34,7 @@ class DataType:
     CompactArray = 0x13
 
 
-class PhysicalUnits(Enum):
+class PhysicalUnits(IntEnum):
     """Defines the DLMS physical units."""
     # https://www.dlms.com/files/Blue-Book-Ed-122-Excerpt.pdf
 

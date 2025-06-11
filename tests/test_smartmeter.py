@@ -8,7 +8,7 @@ from src.smartmeter_austria_energy.supplier import SupplierEVN
 
 def test_smartmeter_constructor():
     """Test the constructor of the smartmeter class."""
-    supplier = SupplierEVN
+    supplier = SupplierEVN()
     key_hex_string = "some_hex"
     port = "COM5"
 
@@ -19,7 +19,7 @@ def test_smartmeter_constructor():
 
 def test_smartmeter_has_empty_port():
     """Test the constructor of the smartmeter class with an empty port."""
-    supplier = SupplierEVN
+    supplier = SupplierEVN()
     key_hex_string = "some_hex"
     port = ""
 
@@ -30,7 +30,7 @@ def test_smartmeter_has_empty_port():
 
 def test_smartmeter_supplier():
     """Test the supplier property of the smartmeter class."""
-    supplier = SupplierEVN
+    supplier = SupplierEVN()
     key_hex_string = "some_hex"
     port = "COM5"
 

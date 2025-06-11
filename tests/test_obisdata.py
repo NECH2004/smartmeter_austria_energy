@@ -4,6 +4,8 @@
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-statements
 
+from unittest import mock
+
 from src.smartmeter_austria_energy.constants import PhysicalUnits
 from src.smartmeter_austria_energy.decrypt import Decrypt
 from src.smartmeter_austria_energy.obisdata import ObisData
@@ -14,14 +16,17 @@ from src.smartmeter_austria_energy.supplier import SupplierTINETZ
 def test_ObisData_constructor():
     """Test the obisdata constructor."""
 
-    obisdata = ObisData(dec=None, wanted_values=[])
+    dec_mock = mock.MagicMock(spec=Decrypt)   # clone the public API
+
+    obisdata = ObisData(dec=dec_mock, wanted_values=[])
     assert isinstance(obisdata, ObisData)
 
 
 def test_ObisData_properties():
     """Test the obisdata constructor."""
 
-    obisdata = ObisData(dec=None, wanted_values=[])
+    dec_mock = mock.MagicMock(spec=Decrypt)
+    obisdata = ObisData(dec=dec_mock, wanted_values=[])
 
     current1 = obisdata.CurrentL1
     current2 = obisdata.CurrentL2
@@ -105,16 +110,17 @@ def test_ObisData_properties():
     assert reactiveEnergyOut.unit == PhysicalUnits.varh
 
     assert isinstance(deviceNumber, ObisValueBytes)
-    assert deviceNumber.raw_value == ""
+    assert deviceNumber.raw_value == b""
 
     assert isinstance(logicalDeviceNumber, ObisValueBytes)
-    assert logicalDeviceNumber.raw_value == ""
+    assert logicalDeviceNumber.raw_value == b""
 
 
 def test_ObisData_property_setter():
     """Test the obisdata constructor."""
 
-    obisdata = ObisData(dec=None, wanted_values=[])
+    dec_mock = mock.MagicMock(spec=Decrypt)
+    obisdata = ObisData(dec=dec_mock, wanted_values=[])
 
     obisdata.CurrentL1 = ObisValueFloat(1.1, PhysicalUnits.A, 1)
     obisdata.CurrentL2 = ObisValueFloat(0.77, PhysicalUnits.Undef, -2)
@@ -215,10 +221,10 @@ def test_ObisData_property_setter():
     assert reactiveEnergyOut.unit == PhysicalUnits.varh
 
     assert isinstance(deviceNumber, ObisValueBytes)
-    assert deviceNumber.raw_value == ""
+    assert deviceNumber.raw_value == b""
 
     assert isinstance(logicalDeviceNumber, ObisValueBytes)
-    assert logicalDeviceNumber.raw_value == ""
+    assert logicalDeviceNumber.raw_value == b""
 
 
 def t_Obisdata_no_wanted_values():
@@ -226,8 +232,8 @@ def t_Obisdata_no_wanted_values():
 
     my_wanted_values: list[str] = []
     my_supplier = SupplierTINETZ()
-    frame1 = ""
-    frame2 = ""
+    frame1 = b""
+    frame2 = b""
     my_key_hex_string = ""
 
     my_decrypt = Decrypt(my_supplier, frame1, frame2, my_key_hex_string)

@@ -4,13 +4,15 @@
 
 class Supplier:
     """Supplier base class."""
-    name : str = None
+    name : str
     frame1_start_bytes_hex : str = '68fafa68'
     frame1_start_bytes : bytes = b'\x68\xfa\xfa\x68'  # 68 FA FA 68
+    frame2_start_bytes_hex : str
+    frame2_start_bytes : bytes
     frame2_end_bytes : bytes = b'\x16'
-    ic_start_byte : int = None
-    enc_data_start_byte : int = None
-    supplied_values : list[str] = None
+    ic_start_byte : int
+    enc_data_start_byte : int
+    supplied_values : list[str]
 
 
 class SupplierTINETZ(Supplier):
@@ -70,7 +72,7 @@ SUPPLIER_EVN_NAME = "EVN"
 SUPPLIER_SALZBURGNETZ_NAME = "SALZBURGNETZ"
 SUPPLIER_TINETZ_NAME = "TINETZ"
 
-SUPPLIERS = {
+SUPPLIERS: dict[str, Supplier] = {
     SUPPLIER_EVN_NAME : SupplierEVN(),
     SUPPLIER_SALZBURGNETZ_NAME : SupplierSALZBURGNETZ(),
     SUPPLIER_TINETZ_NAME : SupplierTINETZ(),

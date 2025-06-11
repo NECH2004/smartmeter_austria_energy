@@ -7,7 +7,7 @@ class Obis:
     """Defines the OBIS object."""
 
     @staticmethod
-    def to_bytes(code):
+    def to_bytes(code: str):
         """Returns the code as byte array."""
 
         return bytes([int(a) for a in code.split(".")])

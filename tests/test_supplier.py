@@ -96,14 +96,9 @@ def test_Supplier():
     """Test the Supplier class."""
     my_supplier = Supplier()
 
-    assert my_supplier.name is None
-    assert my_supplier.ic_start_byte is None
-    assert my_supplier.enc_data_start_byte is None
-
     assert my_supplier.frame1_start_bytes_hex == _frame1_start_bytes_hex
     assert my_supplier.frame1_start_bytes == _frame1_start_bytes
     assert my_supplier.frame2_end_bytes == _frame2_end_bytes
-    assert my_supplier.supplied_values is None
 
 
 def test_SupplierEVN():

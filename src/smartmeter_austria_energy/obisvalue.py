@@ -15,13 +15,13 @@ class ObisValueFloat:
         self._scale = scale
         self._unit = unit
 
-    def __add__(self, other):
+    def __add__(self, other: "ObisValueFloat"):
         if self.unit == other.unit:
             x = self.value + other.value
             return ObisValueFloat(x, self.unit)
         return ObisValueFloat(math.nan)
 
-    def __sub__(self, other):
+    def __sub__(self, other: "ObisValueFloat"):
         if self.unit == other.unit:
             x = self.value - other.value
             return ObisValueFloat(x, self.unit)

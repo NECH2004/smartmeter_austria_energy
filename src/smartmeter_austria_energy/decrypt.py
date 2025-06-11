@@ -15,15 +15,15 @@ class Decrypt:
     """Decrypts the response frames."""
 
     def __init__(self, supplier: Supplier, frame1: bytes, frame2: bytes, key_hex_string: str):
-        self.obis = {}
-        self.obis_values = {}
+        self.obis: dict[bytes, str | bytes] = {}
+        self.obis_values: dict[bytes, ObisValueFloat | ObisValueBytes | None] = {}
 
         key = binascii.unhexlify(key_hex_string)  # convert to binary stream
         systitle = frame1[11:19]  # systitle at byte 12, length 8
 
         # invocation counter length 4
         ic = frame1[supplier.ic_start_byte : supplier.ic_start_byte + 4]
-        iv = systitle + ic  # initialization vector
+        iv = systitle + ic # initialization vector
 
         # start at byte 26 or 27 (dep on supplier), excluding 2 bytes at end:
         # checksum byte, end byte 0x16
@@ -34,7 +34,7 @@ class Decrypt:
         data_frame2 = frame2[9 : len(frame2) - 2]
 
         data_encrypted = data_frame1 + data_frame2
-        cipher = AES.new(key, AES.MODE_GCM, nonce=iv)
+        cipher = AES.new(key=key, mode=AES.MODE_GCM, nonce=iv) # type: ignore
         self._data_decrypted = cipher.decrypt(data_encrypted)
 
     def parse_all(self):
@@ -95,7 +95,7 @@ class Decrypt:
 
                 self.obis_values[obis_code] = ObisValueBytes(octet)
 
-    def get_obis_value(self, name) -> ObisValueFloat | ObisValueBytes:
+    def get_obis_value(self, name: str) -> ObisValueFloat | ObisValueBytes | None:
         """Fetch the value of the data structure using its key."""
 
         d = getattr(Obis, name)
