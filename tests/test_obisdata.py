@@ -4,14 +4,52 @@
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-statements
 
+import pytest
+from unittest.mock import Mock, MagicMock
 from unittest import mock
 
 from src.smartmeter_austria_energy.constants import PhysicalUnits
 from src.smartmeter_austria_energy.decrypt import Decrypt
 from src.smartmeter_austria_energy.obisdata import ObisData
 from src.smartmeter_austria_energy.obisvalue import ObisValueFloat, ObisValueBytes
-from src.smartmeter_austria_energy.supplier import SupplierTINETZ
 
+
+@pytest.fixture
+def dummy_decrypt():
+    # Create a mock object for Decrypt.
+    dummy = Mock()
+    # Configure get_obis_value to return predetermined values
+    # for some keys and None for others.
+    dummy.get_obis_value.side_effect = lambda key: { # type: ignore
+        "VoltageL1": ObisValueFloat(230, PhysicalUnits.V, 0),
+        "CurrentL1": ObisValueFloat(5, PhysicalUnits.A, 0),
+        "RealPowerIn": ObisValueFloat(1000, PhysicalUnits.W, 0),
+        "RealPowerOut": ObisValueFloat(800, PhysicalUnits.W, 0),
+        "DeviceNumber": ObisValueBytes(b"12345"),
+    }.get(key, None) # type: ignore
+    return dummy
+
+
+@pytest.fixture
+def dummy_decrypt_stub():
+    dummy = MagicMock()
+    # For simplicity in this test we don't need any specific keys.
+    dummy.get_obis_value.return_value = None
+    return dummy
+
+
+@pytest.fixture
+def dummy_big_decrypt_stub():
+    dummy = MagicMock()
+    # Define the behavior for get_obis_value.
+    dummy.get_obis_value.side_effect = lambda key: { # type: ignore
+        "VoltageL1": ObisValueFloat(230, PhysicalUnits.V, 0),
+        "CurrentL1": ObisValueFloat(5, PhysicalUnits.A, 0),
+        "RealPowerIn": ObisValueFloat(1000, PhysicalUnits.W, 0),
+        "RealPowerOut": ObisValueFloat(800, PhysicalUnits.W, 0),
+        "DeviceNumber": ObisValueBytes(b"12345"),
+    }.get(key, None) # type: ignore
+    return dummy
 
 def test_ObisData_constructor():
     """Test the obisdata constructor."""
@@ -227,16 +265,106 @@ def test_ObisData_property_setter():
     assert logicalDeviceNumber.raw_value == b""
 
 
-def t_Obisdata_no_wanted_values():
+def test_Obisdata_no_wanted_values(dummy_big_decrypt_stub: Decrypt) -> None:
     """Test the ObisObisDataValue class."""
 
-    my_wanted_values: list[str] = []
-    my_supplier = SupplierTINETZ()
-    frame1 = b""
-    frame2 = b""
-    my_key_hex_string = ""
+    data = ObisData(dummy_big_decrypt_stub, [])
+    # Defaults for numeric values defined in __init__ should remain.
+    assert isinstance(data.VoltageL1, ObisValueFloat)
+    assert data.VoltageL1.value == 0
+    # For bytes, default is an empty bytes object.
+    assert isinstance(data.DeviceNumber, ObisValueBytes)
+    assert data.DeviceNumber.raw_value == b""
 
-    my_decrypt = Decrypt(my_supplier, frame1, frame2, my_key_hex_string)
-    my_obisdata = ObisData(dec=my_decrypt, wanted_values=my_wanted_values)
+def test_obisdata_dynamic_assignment(dummy_decrypt: Decrypt):
+    """Test that the __init__ dynamically assigns OBIS values based on wanted_values."""
+    
+    # Only provide keys for which dummy_decrypt.get_obis_value returns a value.
+    wanted_keys = ["VoltageL1", "DeviceNumber", "NonExistingKey"]
+    data = ObisData(dummy_decrypt, wanted_keys)
 
-    assert my_obisdata is not None
+    # For keys that were provided and exist...
+    # VoltageL1 should have been updated; compare by checking its value.
+    vol_l1 = data.VoltageL1
+    assert isinstance(vol_l1, ObisValueFloat)
+    assert vol_l1.value == 230
+    assert vol_l1.unit == PhysicalUnits.V
+
+    # DeviceNumber should be updated.
+    dev_num = data.DeviceNumber
+    assert isinstance(dev_num, ObisValueBytes)
+    # In your design, DeviceNumber remains set to the dummy value.
+    assert dev_num.raw_value == b"12345"
+
+    # For keys not returned (or non-existing), the default should remain.
+    # For example, VoltageL2 was initialized with a zero value and unit V.
+    vol_l2 = data.VoltageL2
+    assert isinstance(vol_l2, ObisValueFloat)
+    assert vol_l2.value == 0
+    assert vol_l2.unit == PhysicalUnits.V
+
+
+def test_obisdata_setters_and_getters(dummy_decrypt: Decrypt):
+    """Test that the setters and getters for ObisData work correctly."""
+    
+    data = ObisData(dummy_decrypt, [])
+    
+    # Set each property using the setter and check with the getter.
+    new_voltage = ObisValueFloat(240, PhysicalUnits.V, 0)
+    data.VoltageL1 = new_voltage
+    assert data.VoltageL1 == new_voltage
+
+    new_current = ObisValueFloat(10, PhysicalUnits.A, 0)
+    data.CurrentL1 = new_current
+    assert data.CurrentL1 == new_current
+
+    new_device = ObisValueBytes(b"ABCDEF")
+    data.DeviceNumber = new_device
+    assert data.DeviceNumber == new_device
+
+
+def test_real_power_delta(dummy_decrypt: Decrypt):
+    """Test that the RealPowerDelta property calculates the difference correctly."""
+
+    # We don't care about the dynamic assignment here.
+    data = ObisData(dummy_decrypt, [])
+    # Set RealPowerIn and RealPowerOut via the setters.
+    data.RealPowerIn = ObisValueFloat(1000, PhysicalUnits.W, 0)
+    data.RealPowerOut = ObisValueFloat(800, PhysicalUnits.W, 0)
+    # Assuming ObisValueFloat supports subtraction and produces a new ObisValueFloat.
+    delta = data.RealPowerDelta
+    # The expected difference is 200.
+    assert isinstance(delta, ObisValueFloat)
+    assert delta.value == 200
+    # Optionally, check that the units match.
+    assert delta.unit == PhysicalUnits.W
+
+
+def test_energy_and_logical_device_setters(dummy_decrypt_stub: Decrypt):
+    """Test the setters for energy and logical device properties."""
+    
+    # Create an ObisData instance with an empty wanted_values list.
+    data = ObisData(dummy_decrypt_stub, [])
+
+    # --- Real Energy In ---
+    new_energy_in = ObisValueFloat(500, PhysicalUnits.Wh, 0)
+    data.RealEnergyIn = new_energy_in
+    assert data.RealEnergyIn == new_energy_in
+    # --- Real Energy Out ---
+    new_energy_out = ObisValueFloat(300, PhysicalUnits.Wh, 0)
+    data.RealEnergyOut = new_energy_out
+    assert data.RealEnergyOut == new_energy_out
+
+    # --- Reactive Energy In ---
+    new_reactive_in = ObisValueFloat(150, PhysicalUnits.varh, 0)
+    data.ReactiveEnergyIn = new_reactive_in
+    assert data.ReactiveEnergyIn == new_reactive_in
+    # --- Reactive Energy Out ---
+    new_reactive_out = ObisValueFloat(100, PhysicalUnits.varh, 0)
+    data.ReactiveEnergyOut = new_reactive_out
+    assert data.ReactiveEnergyOut == new_reactive_out
+
+    # --- Logical Device Number ---
+    new_logical_device = ObisValueBytes(b"LOG123")
+    data.LogicalDeviceNumber = new_logical_device
+    assert data.LogicalDeviceNumber == new_logical_device

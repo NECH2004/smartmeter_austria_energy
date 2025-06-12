@@ -34,6 +34,7 @@ class DataType(IntEnum):
     CompactArray = 0x13
 
 
+@unique
 class PhysicalUnits(IntEnum):
     """Defines the DLMS physical units."""
     # https://www.dlms.com/files/Blue-Book-Ed-122-Excerpt.pdf

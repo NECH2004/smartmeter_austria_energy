@@ -51,12 +51,12 @@ class Smartmeter:
         self._logger = logging.getLogger(__name__)
         self._is_running: bool = False
 
-    # read method was mainly taken from https://github.com/tirolerstefan/kaifa
     # pylint: disable=too-many-locals
     # pylint: disable=too-many-branches
     # pylint: disable=too-many-statements
     # pylint: disable=too-many-nested-blocks
 
+    # read method was mainly taken from https://github.com/tirolerstefan/kaifa
     def read(self) -> ObisData | None:
         """Read the data."""
         if self._is_running:
@@ -165,7 +165,15 @@ class Smartmeter:
             self.__close_serial()
 
     def __open_serial(self):
+        # If _my_serial already exists and is open, log that and return.
+        if getattr(self, "_my_serial", None) is not None:
+            if self._my_serial.is_open:  # type: ignore
+                self._logger.debug(f"Serial port '{self._port}' is already open.")
+                return
         try:
+            self._logger.debug(f"Attempting to open serial port '{self._port}' with baudrate {self._baudrate}, "
+                f"parity '{self._parity}', stopbits {self._stopbits}, bytesize {self._bytesize} and timeout {self._interval}.")
+        
             self._my_serial = serial.Serial(
                 port=self._port,
                 baudrate=self._baudrate,
@@ -174,22 +182,29 @@ class Smartmeter:
                 bytesize=self._bytesize,
                 timeout=self._interval,
             )
+            self._logger.debug(f"Serial port '{self._port}' opened successfully.")
         except SerialTimeoutException as ex:
-            self._logger.debug("Timeout happened at closing.")
-            raise SmartmeterTimeoutException(f"'{self._port}' has a timeout.") from ex
+            self._logger.error(f"Timeout occurred while opening serial port '{self._port}': {ex}")
+            raise SmartmeterTimeoutException(f"Timeout occurred when opening port '{self._port}'.") from ex
         except SerialException as ex:
-            self._logger.debug("SerialException happened at closing.")
-            raise SmartmeterSerialException(f"'{self._port}' cannot be opened.") from ex
+            self._logger.error(f"Serial exception occurred while opening port '{self._port}': {ex}")
+            raise SmartmeterSerialException(f"Unable to open port '{self._port}'.") from ex
         except Exception as ex:
-            self._logger.debug("Exception happened at closing.")
+            self._logger.exception(f"Unexpected error occurred while opening serial port '{self._port}': {ex}")
             raise SmartmeterException(f"Connection to '{self._port}' failed.") from ex
+        
 
     def __close_serial(self):
         try:
-            self._my_serial.close() # type: ignore
+            # Check if _my_serial attribute exists and is not None.
+            if getattr(self, "_my_serial", None) is not None:
+                # Check if the serial port is open before attempting to close it.
+                if self._my_serial.is_open:
+                    self._my_serial.close()
         except Exception as ex:
+            self._logger.exception(f"Error while closing serial port '{self._port}'")
             raise SmartmeterException(f"Closing port '{self._port}' failed.") from ex
-
+        
     @property
     def supplier(self) -> Supplier:
         """Gets the supplier."""
