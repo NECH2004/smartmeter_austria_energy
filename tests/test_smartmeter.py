@@ -42,6 +42,7 @@ class DummySerial3(serial.Serial):
     def __init__(self, is_open: bool):
         self.is_open = is_open
 
+
 class DummySupplier(Supplier):
     """A dummy supplier class to simulate a supplier."""
 
@@ -95,6 +96,7 @@ def smartmeter_instance2():
     # Pre-assign _my_serial to simulate an already opened serial port.
     instance._my_serial = DummySerial(is_open=True) # type: ignore
     return instance
+
 
 # Fixture to create an instance of your class with required attributes.
 @pytest.fixture
@@ -243,6 +245,7 @@ def test_open_serial_success(monkeypatch, smartmeter_instance: Smartmeter): # ty
         f"Serial port '{smartmeter_instance._port}' opened successfully." # type: ignore
     )
 
+
 def test_open_serial_already_open(monkeypatch, smartmeter_instance): # type: ignore
     """
     Test that if _my_serial already exists and is open,
@@ -266,6 +269,7 @@ def test_open_serial_already_open(monkeypatch, smartmeter_instance): # type: ign
         f"Serial port '{smartmeter_instance._port}' is already open." # type: ignore
     )
 
+
 def test_open_serial_timeout_exception(monkeypatch, smartmeter_instance: Smartmeter): # type: ignore
     """
     Test that a SerialTimeoutException raised by serial.Serial is wrapped
@@ -282,6 +286,7 @@ def test_open_serial_timeout_exception(monkeypatch, smartmeter_instance: Smartme
     assert f"Timeout occurred when opening port '{smartmeter_instance._port}'" in str(excinfo.value) # type: ignore
     smartmeter_instance._logger.error.assert_called() # type: ignore
 
+
 def test_open_serial_serial_exception(monkeypatch, smartmeter_instance: Smartmeter): # type: ignore
     """
     Test that a SerialException raised by serial.Serial is wrapped
@@ -296,6 +301,7 @@ def test_open_serial_serial_exception(monkeypatch, smartmeter_instance: Smartmet
         smartmeter_instance._Smartmeter__open_serial() # type: ignore
     assert f"Unable to open port '{smartmeter_instance._port}'" in str(excinfo.value) # type: ignore
     smartmeter_instance._logger.error.assert_called() # type: ignore
+
 
 def test_open_serial_generic_exception(monkeypatch, smartmeter_instance: Smartmeter): # type: ignore
     """
