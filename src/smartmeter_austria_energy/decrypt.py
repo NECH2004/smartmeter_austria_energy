@@ -22,7 +22,7 @@ LONG_SIZE: int = 2
 class Decrypt:
     """Decrypts the response frames."""
 
-    def __init__(self, supplier: Supplier, frame1: bytes, frame2: bytes, key_hex_string: str):
+    def __init__(self, supplier: Supplier, frame1: bytes, frame2: bytes, key_hex_string: str)-> None:
         self.obis: dict[bytes, str | bytes] = {}
         self.obis_values: dict[bytes, ObisValueFloat | ObisValueBytes | None] = {}
 
@@ -47,7 +47,7 @@ class Decrypt:
         cipher = AES.new(key=key, mode=AES.MODE_GCM, nonce=iv) # type: ignore
         self._data_decrypted = cipher.decrypt(data_encrypted)
 
-    def parse_all(self):
+    def parse_all(self)-> None:
         """Parse both frames."""
 
         decrypted = self._data_decrypted

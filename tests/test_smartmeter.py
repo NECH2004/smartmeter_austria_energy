@@ -1,6 +1,7 @@
 """Tests the Smartmeter class."""
 
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
 import serial
 
 from unittest.mock import MagicMock
@@ -59,7 +60,7 @@ class DummySupplier(Supplier):
 
 
 @pytest.fixture
-def smartmeter_instance():
+def smartmeter_instance() -> Smartmeter:
     supplier = DummySupplier()
     # Provide dummy values for key and port. Other parameters are default.
     sm = Smartmeter(
@@ -74,7 +75,7 @@ def smartmeter_instance():
 
 
 @pytest.fixture
-def smartmeter_instance2():
+def smartmeter_instance2() -> Smartmeter:
     """
     Fixture that creates a Smartmeter instance with dummy values and
     assigns a MagicMock logger. Also sets _my_serial to a dummy serial
@@ -100,7 +101,7 @@ def smartmeter_instance2():
 
 # Fixture to create an instance of your class with required attributes.
 @pytest.fixture
-def serial_instance():
+def serial_instance() -> Smartmeter:
     # Create a Smartmeter instance.
     # The __init__ signature is:
     #   __init__(supplier, port, key_hex_string, interval=1, baudrate=2400,
@@ -126,7 +127,7 @@ def serial_instance():
     return instance
 
 
-def test_smartmeter_constructor():
+def test_smartmeter_constructor() -> None:
     """Test the constructor of the smartmeter class."""
     supplier = SupplierEVN()
     key_hex_string = "some_hex"
@@ -137,7 +138,7 @@ def test_smartmeter_constructor():
     assert isinstance(my_smartmeter, Smartmeter)
 
 
-def test_smartmeter_has_empty_port():
+def test_smartmeter_has_empty_port() -> None:
     """Test the constructor of the smartmeter class with an empty port."""
     supplier = SupplierEVN()
     key_hex_string = "some_hex"
@@ -148,7 +149,7 @@ def test_smartmeter_has_empty_port():
         my_smartmeter.read()
 
 
-def test_smartmeter_supplier():
+def test_smartmeter_supplier() -> None:
     """Test the supplier property of the smartmeter class."""
     supplier = SupplierEVN()
     key_hex_string = "some_hex"
@@ -159,7 +160,7 @@ def test_smartmeter_supplier():
     assert supplier == my_smartmeter.supplier
 
 
-def test_close_serial_none(smartmeter_instance: Smartmeter):
+def test_close_serial_none(smartmeter_instance: Smartmeter) -> None:
     """
     Test __close_serial does nothing if _my_serial is not set.
     """
@@ -170,7 +171,7 @@ def test_close_serial_none(smartmeter_instance: Smartmeter):
     # No exception should occur.
 
 
-def test_close_serial_already_closed(smartmeter_instance: Smartmeter):
+def test_close_serial_already_closed(smartmeter_instance: Smartmeter) -> None:
     """
     Test __close_serial does nothing if _my_serial exists but the port is not open.
     """
@@ -182,7 +183,7 @@ def test_close_serial_already_closed(smartmeter_instance: Smartmeter):
     assert dummy.called is False
 
 
-def test_close_serial_when_open(smartmeter_instance: Smartmeter):
+def test_close_serial_when_open(smartmeter_instance: Smartmeter) -> None:
     """
     Test __close_serial calls close() when _my_serial is open.
     """
@@ -193,7 +194,7 @@ def test_close_serial_when_open(smartmeter_instance: Smartmeter):
     assert dummy.called is True
 
 
-def test_close_serial_exception(smartmeter_instance: Smartmeter):
+def test_close_serial_exception(smartmeter_instance: Smartmeter) -> None:
     """
     Test that if _my_serial.close() raises an exception, __close_serial wraps it in SmartmeterException.
     """
@@ -205,7 +206,7 @@ def test_close_serial_exception(smartmeter_instance: Smartmeter):
     assert f"Closing port '{smartmeter_instance._port}' failed" in str(excinfo.value) # type: ignore
 
 
-def test_already_open(smartmeter_instance2: Smartmeter):
+def test_already_open(smartmeter_instance2: Smartmeter) -> None:
     """
     Test that if the _my_serial attribute is already set and open,
     __open_serial logs the message and exits early.
@@ -217,7 +218,7 @@ def test_already_open(smartmeter_instance2: Smartmeter):
     smartmeter_instance2._logger.debug.assert_called_with("Serial port 'COM1' is already open.") # type: ignore
 
 
-def test_open_serial_success(monkeypatch, smartmeter_instance: Smartmeter): # type: ignore
+def test_open_serial_success(monkeypatch: MonkeyPatch, smartmeter_instance: Smartmeter) -> None:
     """
     Test that __open_serial successfully opens the serial port
     and assigns _my_serial when no exception occurs.
@@ -246,14 +247,14 @@ def test_open_serial_success(monkeypatch, smartmeter_instance: Smartmeter): # ty
     )
 
 
-def test_open_serial_already_open(monkeypatch, smartmeter_instance): # type: ignore
+def test_open_serial_already_open(monkeypatch: MonkeyPatch, smartmeter_instance: Smartmeter) -> None:
     """
     Test that if _my_serial already exists and is open,
     __open_serial does nothing.
     """
     # Set _my_serial to a dummy serial that is open.
     dummy_serial = DummySerial()
-    smartmeter_instance._my_serial = dummy_serial
+    smartmeter_instance._my_serial = dummy_serial # type: ignore
 
     # Monkey-patch serial.Serial with a function that would raise if called.
     def should_not_be_called(*args, **kwargs): # type: ignore
@@ -263,14 +264,14 @@ def test_open_serial_already_open(monkeypatch, smartmeter_instance): # type: ign
     # Call __open_serial again.
     smartmeter_instance._Smartmeter__open_serial() # type: ignore
     # Check that _my_serial is unchanged.
-    assert smartmeter_instance._my_serial is dummy_serial
+    assert smartmeter_instance._my_serial is dummy_serial # type: ignore
     # Verify that a debug message was issued.
     smartmeter_instance._logger.debug.assert_called_with( # type: ignore
         f"Serial port '{smartmeter_instance._port}' is already open." # type: ignore
     )
 
 
-def test_open_serial_timeout_exception(monkeypatch, smartmeter_instance: Smartmeter): # type: ignore
+def test_open_serial_timeout_exception(monkeypatch: MonkeyPatch, smartmeter_instance: Smartmeter) -> None:
     """
     Test that a SerialTimeoutException raised by serial.Serial is wrapped
     as a SmartmeterTimeoutException.
@@ -287,7 +288,7 @@ def test_open_serial_timeout_exception(monkeypatch, smartmeter_instance: Smartme
     smartmeter_instance._logger.error.assert_called() # type: ignore
 
 
-def test_open_serial_serial_exception(monkeypatch, smartmeter_instance: Smartmeter): # type: ignore
+def test_open_serial_serial_exception(monkeypatch: MonkeyPatch, smartmeter_instance: Smartmeter) -> None:
     """
     Test that a SerialException raised by serial.Serial is wrapped
     as a SmartmeterSerialException.
@@ -303,7 +304,7 @@ def test_open_serial_serial_exception(monkeypatch, smartmeter_instance: Smartmet
     smartmeter_instance._logger.error.assert_called() # type: ignore
 
 
-def test_open_serial_generic_exception(monkeypatch, smartmeter_instance: Smartmeter): # type: ignore
+def test_open_serial_generic_exception(monkeypatch: MonkeyPatch, smartmeter_instance: Smartmeter) -> None:
     """
     Test that a generic Exception raised by serial.Serial is wrapped
     as a SmartmeterException.

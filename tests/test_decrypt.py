@@ -380,3 +380,5 @@ def test_parse_all_with_evn(decrypt_instance: Decrypt):
     # If your ObisValueBytes returns the data as str
     assert isinstance(ov3, ObisValueBytes)
     assert ov3.value == expected_octet_data
+
+
