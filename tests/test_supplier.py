@@ -49,35 +49,35 @@ _supplied_values_evn : list[str] = [
     "LogicalDeviceNumber"]
 
 
-def test_Suppliers_EVN():
+def test_Suppliers_EVN()-> None:
     """Test the Suppliers dict."""
     my_supplier = SUPPLIERS[SUPPLIER_EVN_NAME]
 
     assert isinstance(my_supplier, SupplierEVN)
 
 
-def test_Suppliers_SalzburgNetz():
+def test_Suppliers_SalzburgNetz()-> None:
     """Test the Suppliers dict."""
     my_supplier = SUPPLIERS[SUPPLIER_SALZBURGNETZ_NAME]
 
     assert isinstance(my_supplier, SupplierSALZBURGNETZ)
 
 
-def test_Suppliers_TINETZ():
+def test_Suppliers_TINETZ()-> None:
     """Test the Suppliers dict."""
     my_supplier = SUPPLIERS[SUPPLIER_TINETZ_NAME]
 
     assert isinstance(my_supplier, SupplierTINETZ)
 
 
-def test_Suppliers_EVN_inheritance():
+def test_Suppliers_EVN_inheritance()-> None:
     """Test the SupplierEVN class for inheritance."""
     my_supplier = SupplierEVN()
 
     assert isinstance(my_supplier, Supplier)
 
 
-def test_Suppliers_SalzburgNETZ_inheritance():
+def test_Suppliers_SalzburgNETZ_inheritance()-> None:
     """Test the SupplierSALZBURGNETZ class for inheritance."""
     my_supplier = SupplierSALZBURGNETZ()
 
@@ -85,14 +85,14 @@ def test_Suppliers_SalzburgNETZ_inheritance():
     assert isinstance(my_supplier, Supplier)
 
 
-def test_Suppliers_TINETZ_inheritance():
+def test_Suppliers_TINETZ_inheritance()-> None:
     """Test the SupplierTINETZ class for inheritance."""
     my_supplier = SupplierTINETZ()
 
     assert isinstance(my_supplier, Supplier)
 
 
-def test_Supplier():
+def test_Supplier()-> None:
     """Test the Supplier class."""
     my_supplier = Supplier()
 
@@ -101,7 +101,7 @@ def test_Supplier():
     assert my_supplier.frame2_end_bytes == _frame2_end_bytes
 
 
-def test_SupplierEVN():
+def test_SupplierEVN()-> None:
     """Test the SupplierEVN class."""
     my_supplier = SupplierEVN()
 
@@ -118,7 +118,7 @@ def test_SupplierEVN():
     assert my_supplier.frame2_start_bytes == b'\x68\x14\x14\x68'
 
 
-def test_SupplierTINETZ():
+def test_SupplierTINETZ()-> None:
     """Test the SupplierTINETZ class."""
     my_supplier = SupplierTINETZ()
 
@@ -135,7 +135,7 @@ def test_SupplierTINETZ():
     assert my_supplier.frame2_start_bytes == b'\x68\x72\x72\x68'
 
 
-def test_SupplierSALZBURGNETZ():
+def test_SupplierSALZBURGNETZ()-> None:
     """Test the SupplierSALZBURGNETZ class."""
     my_supplier = SupplierSALZBURGNETZ()
 

@@ -7,12 +7,12 @@
 from src.smartmeter_austria_energy.constants import DataType, PhysicalUnits
 
 
-def test_DataType_conversion():
+def test_DataType_conversion()-> None:
     """Test a datatype conversion."""
 
     assert int(DataType.Float32) == 0x17
 
-def test_datatype_values():
+def test_datatype_values()-> None:
     """Test that DataType enum members have the expected hexadecimal values."""
 
     assert DataType.NullData == 0x00
@@ -40,14 +40,14 @@ def test_datatype_values():
     assert DataType.Structure == 0x02
     assert DataType.CompactArray == 0x13
 
-def test_datatype_int_conversion():
+def test_datatype_int_conversion()-> None:
     """Test that each DataType enum member converts to an integer correctly."""
 
     for member in DataType:
         # Verify that conversion to int yields an integer type.
         assert isinstance(int(member), int)
 
-def test_physicalunits_values():
+def test_physicalunits_values()-> None:
     """Test that PhysicalUnits enum members have the expected hexadecimal values."""
 
     assert PhysicalUnits.Undef == 0x00
@@ -63,20 +63,20 @@ def test_physicalunits_values():
     assert PhysicalUnits.Hz == 0x2C
     assert PhysicalUnits.NoUnit == 0xFF
 
-def test_physicalunits_int_conversion():
+def test_physicalunits_int_conversion()-> None:
     """Test that each PhysicalUnits enum member converts to an integer correctly."""
 
     for member in PhysicalUnits:
         # Verify that conversion to int yields an integer type.
         assert isinstance(int(member), int)
 
-def test_datatype_unique():
+def test_datatype_unique()-> None:
     """Test that all values in DataTypes are unique."""
     
     values = [member.value for member in DataType]
     assert len(values) == len(set(values)), "Duplicate values found in DataType"
 
-def test_physicalunits_unique():
+def test_physicalunits_unique()-> None:
     """Test that all values in PhysicalUnits are unique."""
 
     values = [member.value for member in PhysicalUnits]

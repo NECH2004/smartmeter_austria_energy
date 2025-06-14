@@ -20,18 +20,24 @@ class DummySerial:
         # Set is_open to True to simulate a successful opening.
         self.is_open = True
 
-    def close(self):
+    def close(self)-> None:
+        """Simulate closing the serial port."""
+
         pass
 
 class DummySerial2:
     """A dummy serial class to simulate a serial port."""
 
-    def __init__(self, is_open: bool, raise_on_close: bool = False):
+    def __init__(self, is_open: bool, raise_on_close: bool = False)-> None:
+        """Initialize the dummy serial port."""
+
         self.is_open = is_open
         self.called = False  # Flag to indicate if close() was called.
         self.raise_on_close = raise_on_close
 
-    def close(self):
+    def close(self)-> None:
+        """Simulate closing the serial port."""
+        
         self.called = True
         if self.raise_on_close:
             raise Exception("Dummy failure on close")
@@ -40,14 +46,18 @@ class DummySerial2:
 class DummySerial3(serial.Serial):
     """A dummy serial class to simulate a serial port."""
 
-    def __init__(self, is_open: bool):
+    def __init__(self, is_open: bool)-> None:
+        """Initialize the dummy serial port."""
+
         self.is_open = is_open
 
 
 class DummySupplier(Supplier):
     """A dummy supplier class to simulate a supplier."""
 
-    def __init__(self):
+    def __init__(self)-> None:
+        """Initialize the dummy supplier."""
+
         # Initialize any required properties. If Supplier has an __init__,
         # you might need to call super().__init__() and/or customize parameters.
         # For our tests, we define the minimal attributes needed.
@@ -62,6 +72,8 @@ class DummySupplier(Supplier):
 @pytest.fixture
 def smartmeter_instance() -> Smartmeter:
     supplier = DummySupplier()
+    """Fixture that creates a Smartmeter instance with dummy values."""
+
     # Provide dummy values for key and port. Other parameters are default.
     sm = Smartmeter(
         supplier=supplier,
@@ -102,6 +114,8 @@ def smartmeter_instance2() -> Smartmeter:
 # Fixture to create an instance of your class with required attributes.
 @pytest.fixture
 def serial_instance() -> Smartmeter:
+    """Fixture that creates a Smartmeter instance with dummy values"""
+
     # Create a Smartmeter instance.
     # The __init__ signature is:
     #   __init__(supplier, port, key_hex_string, interval=1, baudrate=2400,

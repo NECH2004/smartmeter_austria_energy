@@ -8,7 +8,7 @@ from src.smartmeter_austria_energy.constants import PhysicalUnits
 from src.smartmeter_austria_energy.obisvalue import ObisValueFloat, ObisValueBytes
 
 
-def test_ObisvalueFloat():
+def test_ObisvalueFloat()-> None:
     """Test the ObisValueFloat class."""
     my_raw_value: float = 12345
 
@@ -26,7 +26,7 @@ def test_ObisvalueFloat():
     assert my_obisvalue.value_string == f"{my_obisvalue.value} {my_obisvalue.unit.name}"
 
 
-def test_ObisvalueFloat_add_matching_unit():
+def test_ObisvalueFloat_add_matching_unit()-> None:
     """Test the ObisValueFloat class add method."""
 
     my_raw_value1: float = 1.1
@@ -55,7 +55,7 @@ def test_ObisvalueFloat_add_matching_unit():
     assert my_obisvalue.value_string == f"{my_obisvalue.value} {my_obisvalue.unit.name}"
 
 
-def test_ObisvalueFloat_sub_matching_unit():
+def test_ObisvalueFloat_sub_matching_unit()-> None:
     """Test the ObisValueFloat class subtract method."""
 
     my_raw_value1: float = 1.1
@@ -83,7 +83,7 @@ def test_ObisvalueFloat_sub_matching_unit():
     assert my_obisvalue.value_string == f"{my_obisvalue.value} {my_obisvalue.unit.name}"
 
 
-def test_ObisvalueFloat_add_not_matching_unit():
+def test_ObisvalueFloat_add_not_matching_unit()-> None:
     """Test the ObisValueFloat class add method."""
 
     my_raw_value1: float = 0.7
@@ -110,7 +110,7 @@ def test_ObisvalueFloat_add_not_matching_unit():
     assert my_obisvalue.value_string == f"{my_obisvalue.value} {my_obisvalue.unit.name}"
 
 
-def test_ObisvalueFloat_sub_not_matching_unit():
+def test_ObisvalueFloat_sub_not_matching_unit()-> None:
     """Test the ObisValueFloat class subtract method."""
 
     my_raw_value1: float = 1.1
@@ -137,7 +137,7 @@ def test_ObisvalueFloat_sub_not_matching_unit():
     assert my_obisvalue.value_string == f"{my_obisvalue.value} {my_obisvalue.unit.name}"
 
 
-def test_ObisvalueBates_raw_value():
+def test_ObisvalueBates_raw_value()-> None:
     """Test the ObisValueBytes raw_value property."""
 
     my_raw_value: bytes = "Test_me".encode()
@@ -146,7 +146,7 @@ def test_ObisvalueBates_raw_value():
     assert my_obisvalue.raw_value == my_raw_value
 
 
-def test_ObisvalueBytes_value():
+def test_ObisvalueBytes_value()-> None:
     """Test the ObisValueBytes value property."""
 
     my_raw_value: bytes = "Test_me".encode()

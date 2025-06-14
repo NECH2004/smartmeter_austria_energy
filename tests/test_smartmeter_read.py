@@ -10,7 +10,9 @@ from src.smartmeter_austria_energy.smartmeter import Smartmeter
 from src.smartmeter_austria_energy.supplier import Supplier
 
 class DummySupplier(Supplier):
-    def __init__(self):
+    """Dummy Supplier class to simulate the expected attributes for Smartmeter."""
+
+    def __init__(self)-> None:
         # Minimal attributes expected by Smartmeter:
         self.frame1_start_bytes = b"68fafa68"
         self.frame2_start_bytes = b"68727268"
@@ -21,6 +23,8 @@ class DummySupplier(Supplier):
 
 # A dummy serial class to simulate reading.
 class DummySerialForRead:
+    """Dummy Serial class to simulate reading from a serial port."""
+
     def __init__(self, stream: bytes) -> None:
         self.stream = stream
         self.call_count = 0
@@ -61,13 +65,15 @@ class DummyDecrypt:
         self.frame2:bytes = frame2
         self.key_hex_string:str = key_hex_string
     
-    def parse_all(self):
+    def parse_all(self)-> None:
         pass
 
 
 # Pytest fixture for a Smartmeter instance using DummySupplier.
 @pytest.fixture
 def smartmeter_instance()-> Smartmeter:
+    """Create a Smartmeter instance with a dummy supplier and minimal configuration."""
+    
     supplier = DummySupplier()
     sm = Smartmeter(
         supplier=supplier,

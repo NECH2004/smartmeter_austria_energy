@@ -15,7 +15,9 @@ from src.smartmeter_austria_energy.obisvalue import ObisValueFloat, ObisValueByt
 
 
 @pytest.fixture
-def dummy_decrypt():
+def dummy_decrypt()-> Decrypt:
+    """Create a dummy Decrypt instance for testing."""
+
     # Create a mock object for Decrypt.
     dummy = Mock()
     # Configure get_obis_value to return predetermined values
@@ -31,7 +33,9 @@ def dummy_decrypt():
 
 
 @pytest.fixture
-def dummy_decrypt_stub():
+def dummy_decrypt_stub()-> Decrypt:
+    """Create a dummy Decrypt instance for testing without specific keys."""
+
     dummy = MagicMock()
     # For simplicity in this test we don't need any specific keys.
     dummy.get_obis_value.return_value = None
@@ -39,7 +43,9 @@ def dummy_decrypt_stub():
 
 
 @pytest.fixture
-def dummy_big_decrypt_stub():
+def dummy_big_decrypt_stub()-> Decrypt:
+    """Create a dummy Decrypt instance with many keys for testing."""
+
     dummy = MagicMock()
     # Define the behavior for get_obis_value.
     dummy.get_obis_value.side_effect = lambda key: { # type: ignore
@@ -51,7 +57,7 @@ def dummy_big_decrypt_stub():
     }.get(key, None) # type: ignore
     return dummy
 
-def test_ObisData_constructor():
+def test_ObisData_constructor()-> None:
     """Test the obisdata constructor."""
 
     dec_mock = mock.MagicMock(spec=Decrypt)   # clone the public API
@@ -60,7 +66,7 @@ def test_ObisData_constructor():
     assert isinstance(obisdata, ObisData)
 
 
-def test_ObisData_properties():
+def test_ObisData_properties()-> None:
     """Test the obisdata constructor."""
 
     dec_mock = mock.MagicMock(spec=Decrypt)
@@ -154,7 +160,7 @@ def test_ObisData_properties():
     assert logicalDeviceNumber.raw_value == b""
 
 
-def test_ObisData_property_setter():
+def test_ObisData_property_setter()-> None:
     """Test the obisdata constructor."""
 
     dec_mock = mock.MagicMock(spec=Decrypt)
@@ -276,7 +282,7 @@ def test_Obisdata_no_wanted_values(dummy_big_decrypt_stub: Decrypt) -> None:
     assert isinstance(data.DeviceNumber, ObisValueBytes)
     assert data.DeviceNumber.raw_value == b""
 
-def test_obisdata_dynamic_assignment(dummy_decrypt: Decrypt):
+def test_obisdata_dynamic_assignment(dummy_decrypt: Decrypt)-> None:
     """Test that the __init__ dynamically assigns OBIS values based on wanted_values."""
     
     # Only provide keys for which dummy_decrypt.get_obis_value returns a value.
@@ -304,7 +310,7 @@ def test_obisdata_dynamic_assignment(dummy_decrypt: Decrypt):
     assert vol_l2.unit == PhysicalUnits.V
 
 
-def test_obisdata_setters_and_getters(dummy_decrypt: Decrypt):
+def test_obisdata_setters_and_getters(dummy_decrypt: Decrypt)-> None:
     """Test that the setters and getters for ObisData work correctly."""
     
     data = ObisData(dummy_decrypt, [])
@@ -323,7 +329,7 @@ def test_obisdata_setters_and_getters(dummy_decrypt: Decrypt):
     assert data.DeviceNumber == new_device
 
 
-def test_real_power_delta(dummy_decrypt: Decrypt):
+def test_real_power_delta(dummy_decrypt: Decrypt)-> None:
     """Test that the RealPowerDelta property calculates the difference correctly."""
 
     # We don't care about the dynamic assignment here.
@@ -340,7 +346,7 @@ def test_real_power_delta(dummy_decrypt: Decrypt):
     assert delta.unit == PhysicalUnits.W
 
 
-def test_energy_and_logical_device_setters(dummy_decrypt_stub: Decrypt):
+def test_energy_and_logical_device_setters(dummy_decrypt_stub: Decrypt)-> None:
     """Test the setters for energy and logical device properties."""
     
     # Create an ObisData instance with an empty wanted_values list.

@@ -68,7 +68,7 @@ class Decrypt:
                 # EVN Device Name Emulation for OBIS 0-0:96.1.0.255
                 obis_code = b"\x00\x00\x60\x01\x00\xff"
                 data_type = DataType.OctetString
-                pos += 2
+                pos += 1
             else:
                 pos += 1
                 continue
@@ -76,9 +76,9 @@ class Decrypt:
             if data_type == DataType.DoubleLongUnsigned:
                 pos = self.__parse_DoubleLongUnsigned_DataType(decrypted, pos, obis_code)
             elif data_type == DataType.LongUnsigned:
-                pos = self._parse_LongUnsigned_DataType(decrypted, pos, obis_code)
+                pos = self.__parse_LongUnsigned_DataType(decrypted, pos, obis_code)
             elif data_type == DataType.OctetString:
-                pos = self._parse_OctetString_DataType(decrypted, pos, obis_code)
+                pos = self.__parse_OctetString_DataType(decrypted, pos, obis_code)
 
     def __parse_DoubleLongUnsigned_DataType(self, decrypted: bytes, pos: int, obis_code: bytes) -> int:
         """Parse the DoubleLongUnsigned data type."""
@@ -113,7 +113,7 @@ class Decrypt:
         
         return pos
 
-    def _parse_LongUnsigned_DataType(self, decrypted: bytes, pos: int, obis_code: bytes) -> int:
+    def __parse_LongUnsigned_DataType(self, decrypted: bytes, pos: int, obis_code: bytes) -> int:
         """Parse the LongUnsigned data type."""
 
         total_length = len(decrypted)
@@ -146,7 +146,7 @@ class Decrypt:
         
         return pos
 
-    def _parse_OctetString_DataType(self, decrypted: bytes, pos: int, obis_code: bytes) -> int :
+    def __parse_OctetString_DataType(self, decrypted: bytes, pos: int, obis_code: bytes) -> int :
         """Parse the OctetString data type."""
         total_length = len(decrypted)
         
@@ -181,3 +181,4 @@ class Decrypt:
             return data
 
         return None
+    
