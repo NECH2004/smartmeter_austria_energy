@@ -1,13 +1,14 @@
-import time
 import re
-import pytest
-from _pytest.monkeypatch import MonkeyPatch
+import time
+from unittest.mock import MagicMock, Mock
 
-from unittest.mock import MagicMock
+from _pytest.monkeypatch import MonkeyPatch
+import pytest
 
 # Import serial exceptions.
 from src.smartmeter_austria_energy.smartmeter import Smartmeter
 from src.smartmeter_austria_energy.supplier import Supplier
+
 
 class DummySupplier(Supplier):
     """Dummy Supplier class to simulate the expected attributes for Smartmeter."""
@@ -84,6 +85,22 @@ def smartmeter_instance()-> Smartmeter:
     # Replace logger with MagicMock to suppress/log checks.
     sm._logger = MagicMock() # type: ignore
     return sm
+
+# --- Supplier fixture, in case it's not already defined ---
+@pytest.fixture
+def supplier_mock():
+    supplier = Mock()
+    supplier.ic_start_byte = 0
+    supplier.enc_data_start_byte = 0
+    supplier.frame1_start_bytes = b"68fafa68"
+    supplier.frame2_start_bytes = b"68727268"
+    supplier.frame2_end_bytes = b"\x16"
+    supplier.frame1_start_bytes_hex = "68fafa68"
+    supplier.frame2_start_bytes_hex = "68727268"
+    supplier.supplied_values = []
+    return supplier
+
+
 
 ###############################
 # Tests for Smartmeter.read() #
@@ -166,6 +183,7 @@ def test_read_success(monkeypatch: MonkeyPatch, smartmeter_instance: Smartmeter)
     # Check that the returned result is our dummy OBISData instance.
     assert isinstance(result, DummyObisData)
 
+
 def test_read_weird_result(monkeypatch: MonkeyPatch, smartmeter_instance: Smartmeter)-> None:
     """
     Test the branch where after reading, the split result does not lead to valid telegrams.
@@ -200,3 +218,4 @@ def test_read_weird_result(monkeypatch: MonkeyPatch, smartmeter_instance: Smartm
     smartmeter_instance._is_running = False # type: ignore
     result = smartmeter_instance.read()
     assert isinstance(result, DummyObisData)
+

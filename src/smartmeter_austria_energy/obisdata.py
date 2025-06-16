@@ -2,7 +2,7 @@
 
 from .constants import PhysicalUnits
 from .decrypt import Decrypt
-from .obisvalue import ObisValueFloat, ObisValueBytes
+from .obisvalue import ObisValueBytes, ObisValueFloat
 
 
 class ObisData():

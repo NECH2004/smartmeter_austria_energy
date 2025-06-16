@@ -5,7 +5,7 @@
 import math
 
 from src.smartmeter_austria_energy.constants import PhysicalUnits
-from src.smartmeter_austria_energy.obisvalue import ObisValueFloat, ObisValueBytes
+from src.smartmeter_austria_energy.obisvalue import ObisValueBytes, ObisValueFloat
 
 
 def test_ObisvalueFloat()-> None:

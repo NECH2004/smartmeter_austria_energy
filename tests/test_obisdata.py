@@ -4,14 +4,15 @@
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-statements
 
-import pytest
-from unittest.mock import Mock, MagicMock
 from unittest import mock
+from unittest.mock import MagicMock, Mock
+
+import pytest
 
 from src.smartmeter_austria_energy.constants import PhysicalUnits
 from src.smartmeter_austria_energy.decrypt import Decrypt
 from src.smartmeter_austria_energy.obisdata import ObisData
-from src.smartmeter_austria_energy.obisvalue import ObisValueFloat, ObisValueBytes
+from src.smartmeter_austria_energy.obisvalue import ObisValueBytes, ObisValueFloat
 
 
 @pytest.fixture

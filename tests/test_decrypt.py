@@ -1,10 +1,15 @@
-import pytest
 from unittest.mock import Mock
 
-from src.smartmeter_austria_energy.obis import Obis
+import pytest
+
 from src.smartmeter_austria_energy.constants import PhysicalUnits
-from src.smartmeter_austria_energy.decrypt import Decrypt, SYSTITLE_START, SYSTITLE_LENGTH
-from src.smartmeter_austria_energy.obisvalue import ObisValueFloat, ObisValueBytes
+from src.smartmeter_austria_energy.decrypt import (
+    SYSTITLE_LENGTH,
+    SYSTITLE_START,
+    Decrypt,
+)
+from src.smartmeter_austria_energy.obis import Obis
+from src.smartmeter_austria_energy.obisvalue import ObisValueBytes, ObisValueFloat
 
 
 @pytest.fixture

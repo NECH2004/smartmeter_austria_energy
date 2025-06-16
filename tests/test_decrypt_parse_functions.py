@@ -1,9 +1,15 @@
-import pytest
 from unittest.mock import Mock
 
-from src.smartmeter_austria_energy.decrypt import Decrypt, SYSTITLE_START, SYSTITLE_LENGTH
+import pytest
+
 from src.smartmeter_austria_energy.constants import DataType, PhysicalUnits
+from src.smartmeter_austria_energy.decrypt import (
+    SYSTITLE_LENGTH,
+    SYSTITLE_START,
+    Decrypt,
+)
 from src.smartmeter_austria_energy.obisvalue import ObisValueFloat
+
 
 # --- Fixture for a supplier mock ---
 @pytest.fixture

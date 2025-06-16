@@ -1,12 +1,16 @@
 """Tests the Smartmeter class."""
 
-import pytest
-from _pytest.monkeypatch import MonkeyPatch
-import serial
-
 from unittest.mock import MagicMock
 
-from src.smartmeter_austria_energy.exceptions import SmartmeterException, SmartmeterSerialException, SmartmeterTimeoutException
+from _pytest.monkeypatch import MonkeyPatch
+import pytest
+import serial
+
+from src.smartmeter_austria_energy.exceptions import (
+    SmartmeterException,
+    SmartmeterSerialException,
+    SmartmeterTimeoutException,
+)
 from src.smartmeter_austria_energy.smartmeter import Smartmeter
 from src.smartmeter_austria_energy.supplier import Supplier, SupplierEVN
 
@@ -22,10 +26,9 @@ class DummySerial:
 
     def close(self)-> None:
         """Simulate closing the serial port."""
-
         pass
 
-class DummySerial2:
+class DummySerialClosed:
     """A dummy serial class to simulate a serial port."""
 
     def __init__(self, is_open: bool, raise_on_close: bool = False)-> None:
@@ -189,7 +192,7 @@ def test_close_serial_already_closed(smartmeter_instance: Smartmeter) -> None:
     """
     Test __close_serial does nothing if _my_serial exists but the port is not open.
     """
-    dummy = DummySerial2(is_open=False)
+    dummy = DummySerialClosed(is_open=False)
     smartmeter_instance._my_serial = dummy # type: ignore
     # Invoke the private method via name mangling.
     smartmeter_instance._Smartmeter__close_serial() # type: ignore
@@ -201,7 +204,7 @@ def test_close_serial_when_open(smartmeter_instance: Smartmeter) -> None:
     """
     Test __close_serial calls close() when _my_serial is open.
     """
-    dummy = DummySerial2(is_open=True)
+    dummy = DummySerialClosed(is_open=True)
     smartmeter_instance._my_serial = dummy # type: ignore
     # Invoke the private method via name mangling.
     smartmeter_instance._Smartmeter__close_serial() # type: ignore
@@ -212,7 +215,7 @@ def test_close_serial_exception(smartmeter_instance: Smartmeter) -> None:
     """
     Test that if _my_serial.close() raises an exception, __close_serial wraps it in SmartmeterException.
     """
-    dummy = DummySerial2(is_open=True, raise_on_close=True)
+    dummy = DummySerialClosed(is_open=True, raise_on_close=True)
     smartmeter_instance._my_serial = dummy # type: ignore
     with pytest.raises(SmartmeterException) as excinfo:
     # Invoke the private method via name mangling.

@@ -6,9 +6,8 @@ from Crypto.Cipher import AES
 
 from .constants import DataType, PhysicalUnits
 from .obis import Obis
-from .obisvalue import ObisValueFloat, ObisValueBytes
+from .obisvalue import ObisValueBytes, ObisValueFloat
 from .supplier import Supplier
-
 
 # Constants for frame parsing
 SYSTITLE_START: int = 11
