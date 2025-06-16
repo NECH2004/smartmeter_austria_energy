@@ -60,7 +60,8 @@ class Smartmeter:
     def read(self) -> ObisData | None:
         """Read the data."""
         if self._is_running:
-            return None
+            self._logger.error("Smartmeter is already running!")
+            raise SmartmeterException("Smartmeter is already running. Please stop it before starting again.")
 
         try:
             self.__open_serial()

@@ -8,6 +8,7 @@ import pytest
 # Import serial exceptions.
 from src.smartmeter_austria_energy.smartmeter import Smartmeter
 from src.smartmeter_austria_energy.supplier import Supplier
+from src.smartmeter_austria_energy.exceptions import SmartmeterException
 
 
 class DummySupplier(Supplier):
@@ -111,8 +112,9 @@ def test_read_already_running(smartmeter_instance: Smartmeter)-> None:
     When _is_running is already True, read() should immediately return None.
     """
     smartmeter_instance._is_running = True # type: ignore
-    result = smartmeter_instance.read()
-    assert result is None
+
+    with pytest.raises(SmartmeterException) as excinfo: # type: ignore
+        smartmeter_instance.read()
 
 
 def test_read_success(monkeypatch: MonkeyPatch, smartmeter_instance: Smartmeter)-> None:
